@@ -47,6 +47,30 @@ In this workshop, students take on the executive role of a **Healthcare Data Ana
 
 ---
 
+### Workshop 2: Data Preparation, Hygiene & Pipeline Amalgamation (The "4+1" Merge)
+
+In Workshop 2, analysts assemble the central municipal decision-support database by amalgamating curated demographics with external health and socioeconomic indicators across all 52 VGR municipalities.
+
+#### Core Learning Objectives:
+- **Relational Pipeline Amalgamation ("4+1" Join)**:
+  - Formulate primary and foreign key constraints on `municipality_code`.
+  - Execute inner vs. outer audit checks (`pd.merge`) ensuring zero municipality attrition (52/52 maintained).
+- **Data Hygiene & Imputation Sensitivity**:
+  - Unmask administrative missing value tokens (`..`, ` `, `-`) and convert to `np.nan`.
+  - Conduct an **Imputation Sensitivity Audit**: measure variance collapse ($\sigma_{\text{mean}} < \sigma_{\text{median}}$) and evaluate rural equity distortions under mean vs. median imputation.
+- **Preprocessing Choice Menu (Group Portfolio Strategy)**:
+  - Diagnose non-commensurate feature scales and distributional anomalies.
+  - Implement and evaluate data transformations:
+    - **Option A (Log Transform)**: Compressing long right tails in municipal income distributions (`np.log1p`).
+    - **Option B (Robust Capping / Winsorization)**: Mitigating island and mountain transit outliers (95th percentile clipping).
+    - **Option C (Standard Z-Score)**: Centering symmetric clinical indices ($\mu = 0, \sigma = 1$).
+    - **Option D (Min-Max Scaling)**: Compressing utilization rates to bounded $[0, 1]$ intervals.
+- **Validation Governance (The 20% Hold-Out Lock)**:
+  - Enforce the foundational firewall against data leakage and model optimism.
+  - Partition the amalgamated registry into an 80% training set (41 municipalities) and 20% hold-out test set (11 municipalities), cryptographically sequestering test data prior to Module 3 predictive modeling.
+
+---
+
 ## 🔧 Repository Contents & Release Schedule
 
 > 💡 **Pedagogical Workflow**:  
@@ -54,11 +78,16 @@ In this workshop, students take on the executive role of a **Healthcare Data Ana
 
 | File | Release Status | Description |
 | :--- | :--- | :--- |
-| **`starter_m1.ipynb`** | 🟢 **Available Now** | Scaffolded student workshop notebook with step-by-step Python explanations, `# TODO:` coding tasks, and structured business decision questions. |
-| **`solution_m1.ipynb`** | 🔒 *Released After Workshop* | Complete benchmark reference solution with model answers, visualizations, and 53-municipality county ranking. |
-| **`VGR_Demographics_Raw.xlsx`** | 🟢 **Available Now** | Raw Statistics Sweden (SCB) administrative table containing VGR demographic counts by region, single-year age (0–100+), gender, and year (2015–2025). |
-| **`VGR_Demographics_2015_2025.csv`** | 🟢 **Available Now** | Normalized, audit-ready CSV produced during Step 1 (16,218 rows $\times$ 28 columns). |
-| **`requirements.txt`** | 🟢 **Available Now** | Package dependencies for Binder (Pandas, NumPy, SciPy, Matplotlib, Seaborn, OpenPyXL). |
+| **`starter_m1.ipynb`** | 🟢 **Available Now** | Scaffolded student workshop notebook for Module 1 (Demographics & Descriptive Stats). |
+| **`solution_m1.ipynb`** | 🔒 *Released After Workshop* | Complete benchmark reference solution for Module 1 with county rankings and visual distribution audits. |
+| **`starter_m2.ipynb`** | 🟢 **Available Now** | Scaffolded student workshop notebook for Module 2 (Data Preparation, Hygiene & Preprocessing). |
+| **`solution_m2.ipynb`** | 🔒 *Released After Workshop* | Complete benchmark reference solution for Module 2 with executed diagnostic subplots and sensitivity audits. |
+| **`VGR_Demographics_Raw.xlsx`** | 🟢 **Available Now** | Raw Statistics Sweden (SCB) administrative table containing VGR demographic counts (2015–2025). |
+| **`VGR_Demographics_2015_2025.csv`** | 🟢 **Available Now** | Curated, audit-ready demographic CSV produced during Module 1 (16,218 rows $\times$ 28 columns). |
+| **`VGR_External_Health_Socioeconomic.csv`** | 🟢 **Available Now** | Multi-source external indicators table (52 municipalities) containing socioeconomic, transit, risk, and care metrics. |
+| **`VGR_Training_Model_Set.csv`** | 🟢 **Available Now** | 80% training partition (41 municipalities) for predictive modeling in Module 3. |
+| **`VGR_Holdout_Test_Set.csv`** | 🔒 **Locked & Sequestered** | 20% hold-out test partition (11 municipalities) reserved for final blind model evaluation. |
+| **`requirements.txt`** | 🟢 **Available Now** | Package dependencies for Binder (Pandas, NumPy, SciPy, Scikit-learn, Matplotlib, Seaborn, OpenPyXL). |
 
 ---
 
