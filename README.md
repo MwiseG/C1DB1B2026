@@ -14,7 +14,7 @@ This repository is configured for **MyBinder.org**, allowing students and instru
 1. Click the **[Launch Binder](https://mybinder.org/v2/gh/MwiseG/C1DB1B2026/main?labpath=starter_m1.ipynb)** badge above.
 2. Wait 1–2 minutes for the cloud Jupyter environment to build and launch.
 3. Open `starter_m1.ipynb` in the file browser.
-4. Follow the step-by-step instructions, complete the `# TODO:` coding tasks for your assigned municipality, and answer the Strategic Reflection Prompts.
+4. Follow the step-by-step instructions, complete the `# TODO:` coding tasks for your assigned municipality, and answer the Business Decision Questions.
 
 > ⚠️ **Important Submission Notice for Binder Users**:  
 > Binder sessions are temporary and reset when idle. **Always download your completed notebook** to your local computer before closing your browser:  
