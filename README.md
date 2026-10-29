@@ -167,4 +167,4 @@ Starter notebooks for all four modules are available now. Prepare the matching s
 
 Course Instructor: **Gideon Mbiydzenyuy**  
 Email: [gideon.mbiydzenyuy@hb.se](mailto:gideon.mbiydzenyuy@hb.se)  
-Institution: Faculty of Business, Work Life and Social Welfare, University of Borås
+Institution: Faculty of Librarianship, Information, Education and IT — Department of Information Technology, University of Borås
