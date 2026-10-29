@@ -70,7 +70,7 @@ Group-collected files are formatted and joined by the group; there is no source-
 
 Students advise **Vårdlyftet** on where (if anywhere) to establish its next primary care centre, using an allocated portfolio of **five municipalities**. Module 1 does not require a winning municipality. It requires a decision statement, a KPI-to-data map, three prescribed demographic indicators, initial weights, and a live sensitivity rehearsal.
 
-Years, file paths, and vintage are read from `data/manifest.json`. See Document B (`Data_Stream.tex`) for how the course team can replace extracts without rewriting notebooks.
+Years, file paths, and vintage are read from `data/manifest.json`. See Document B (`C1DB1B2026_Data_Stream.pdf`) for how the course team can replace extracts without rewriting notebooks.
 
 #### Core learning objectives
 - Frame the establishment decision (client, alternatives, option not to proceed).

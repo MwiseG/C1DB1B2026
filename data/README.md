@@ -2,7 +2,7 @@
 
 This folder is the **only** place module datasets should live.
 
-- Contract and dictionaries: `../Data_Stream.tex`
+- Contract and dictionaries: `../C1DB1B2026_Data_Stream.pdf`
 - Machine-readable switchboard: `manifest.json`
 - Do not hard-code years or file names in notebooks. Read them from `manifest.json`.
 
@@ -14,4 +14,4 @@ This folder is the **only** place module datasets should live.
 | `03_module3/` | MCDA benchmark | Issued (`MCDA_Benchmark.csv`) |
 | `04_module4/` | Module 4 scenarios | Issued (`Scenario_Spec.csv`, `Constraint_Spec.csv`; not a hold-out) |
 
-To refresh a vintage: replace the file in the module folder, update `manifest.json`, and update `Data_Stream.tex`.
+To refresh a vintage: replace the file in the module folder, update `manifest.json`, and update `C1DB1B2026_Data_Stream.pdf`.
