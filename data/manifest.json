@@ -1,0 +1,60 @@
+{
+  "vintage": "2026.1",
+  "released": "2026-10-27",
+  "course": "C1DB1B",
+  "documentation": "Data_Stream.tex",
+  "module0_decision_model_zero": {
+    "bidding_file": "data/00_decision_model_zero/VGRBiddingDataset.csv",
+    "note": "Anonymized five-municipality portfolios used before allocation. Not the Module 1 calculation source."
+  },
+  "module1": {
+    "anchor_file": "data/01_module1/VGR_Demographics_Anchor.csv",
+    "source_note": "data/01_module1/SOURCE_NOTE.md",
+    "t0": 2015,
+    "t1": 2025,
+    "grain": "one row per municipality and year",
+    "id_fields": ["Municipality_Code", "Year"],
+    "value_fields": ["Pop_Total", "Pop_0_17", "Pop_18_64", "Pop_65_79", "Pop_80_Plus"],
+    "producer": "Statistics Sweden (SCB)",
+    "table_id": "BE0101",
+    "coverage": "52 municipalities in the VGR extract"
+  },
+  "module2": {
+    "folder": "data/02_module2/",
+    "status": "issued",
+    "join_key": "Municipality_Code",
+    "annual_file": "data/02_module2/VGR_Companion_Annual.csv",
+    "static_file": "data/02_module2/VGR_Companion_StaticLookup.csv",
+    "masked_exercise_file": "data/02_module2/VGR_Masked_TreatmentExercise.csv",
+    "source_note": "data/02_module2/SOURCE_NOTE.md",
+    "predictive_component": "Not assigned",
+    "documented_missing_markers": [".."],
+    "note": "Common companion exercise for the five allocated municipalities. Do not split the decision table as a predictive test set."
+  },
+  "module3": {
+    "folder": "data/03_module3/",
+    "status": "issued",
+    "benchmark_file": "data/03_module3/MCDA_Benchmark.csv",
+    "benchmark_meta_file": "data/03_module3/MCDA_Benchmark_Meta.csv",
+    "source_note": "data/03_module3/SOURCE_NOTE.md",
+    "predictive_component": "Not assigned",
+    "note": "Synthetic WSM/TOPSIS benchmark. Apply the same functions to the five-municipality decision table. Do not invent a prediction target."
+  },
+  "module4": {
+    "folder": "data/04_module4/",
+    "status": "issued",
+    "scenario_file": "data/04_module4/Scenario_Spec.csv",
+    "constraint_file": "data/04_module4/Constraint_Spec.csv",
+    "source_note": "data/04_module4/SOURCE_NOTE.md",
+    "predictive_component": "Not assigned",
+    "benchmark_cost_field": "annual_cost",
+    "benchmark_cost_multiplier": 1.2,
+    "benchmark_cost_ceiling": 6.5,
+    "benchmark_combined_cost_weight": 0.7,
+    "portfolio_cost_field": "Est_Premises_Cost_kSEK_num",
+    "portfolio_cost_multiplier": 1.2,
+    "portfolio_cost_ceiling": 650,
+    "portfolio_combined_cost_weight": 0.4,
+    "note": "Scenario overlays for Module 4. Not a predictive hold-out. Prediction remains Not assigned."
+  }
+}

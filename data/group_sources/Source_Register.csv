@@ -1,0 +1,2 @@
+source_id,file_path,observation_unit,key_fields,year_or_period,coverage,units,missing_markers,notes
+example_travel,data/group_sources/example_do_not_submit.csv,one municipality,Municipality_Code,2025,five allocated codes,minutes,..,Replace this row. Do not add group files to manifest.json.

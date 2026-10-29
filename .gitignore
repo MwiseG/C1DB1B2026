@@ -5,3 +5,5 @@ __pycache__/
 build_workshops.py
 .DS_Store
 *.tmp
+solution_m*.ipynb
+VGRPortfolioData.csv

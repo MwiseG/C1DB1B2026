@@ -1,0 +1,845 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[swedish,english]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{verbatim}
+
+\definecolor{caseblue}{RGB}{0,75,135}
+\definecolor{datagreen}{RGB}{39,120,80}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=caseblue,
+    urlcolor=caseblue
+}
+
+\setlist[itemize]{leftmargin=*,itemsep=0.3em}
+\setlist[enumerate]{leftmargin=*,itemsep=0.3em}
+\setlength{\emergencystretch}{2em}
+
+\newtcolorbox{casebox}[1]{
+    breakable,
+    colback=caseblue!5,
+    colframe=caseblue,
+    title={#1},
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{databox}[1]{
+    breakable,
+    colback=datagreen!6,
+    colframe=datagreen,
+    title={#1},
+    fonttitle=\bfseries
+}
+
+\title{
+    {\Large C1DB1B: Datahantering f\"or beslutsfattande}\\[0.5em]
+    {\LARGE Document B: The Data Stream}\\[0.3em]
+    {\large \textit{Datastr\"ommen}}\\[0.5em]
+    {\large Versioned datasets, dictionaries, and module releases}
+}
+
+\author{Course Team}
+\date{Current offering \quad $|$ \quad Vintage as stated below}
+
+\begin{document}
+
+\maketitle
+
+\begin{casebox}{Why this document exists}
+The assignment (\texttt{project\_Introduction.tex}) and the module handbook
+(\texttt{module\_design.tex}) describe \emph{what students decide}
+and \emph{how they work}. They should not contain a particular year's
+population counts, clinic lists, or SCB table vintages.
+
+This document is the data contract for \textbf{course-issued} files.
+When Statistics Sweden, VGR, or the course team updates those files,
+only the folders under \texttt{data/00}--\texttt{data/04} and
+\texttt{manifest.json} change.
+
+Notebooks \emph{read} the manifest. Students do not edit it.
+
+Group-collected downloads (VGR, SCB, or other public extracts
+for the group's approved KPIs) are the expansion of that
+architecture. They follow a different path, described below.
+They are not optional extras once Module~1 has Verified them.
+\end{casebox}
+
+\section{How to Change Data Over Time}
+
+The course uses one folder tree:
+
+\begin{verbatim}
+data/
+  manifest.json
+  00_decision_model_zero/
+  01_module1/
+  02_module2/
+  03_module3/
+  04_module4/
+\end{verbatim}
+
+\texttt{data/manifest.json} is the single switchboard. It records:
+\begin{itemize}
+    \item the course vintage (for example \texttt{2026.1});
+    \item which file each module must load;
+    \item the reference years $t_0$ and $t_1$ used in calculations;
+    \item the official source table identifiers and retrieval dates.
+\end{itemize}
+
+To refresh a module's data without rewriting teaching materials:
+\begin{enumerate}
+    \item Place the new extract in the relevant module folder. Keep the
+    previous file if you need an audit trail (rename with a date suffix).
+    \item Update the corresponding paths, years, and source notes in
+    \texttt{manifest.json}.
+    \item Update the vintage line at the top of this document and the
+    module source note.
+    \item Re-run the instructor solution notebook for that module and
+    store new reference values if the live challenge depends on them.
+\end{enumerate}
+
+Notebooks must load years and paths from the manifest:
+\begin{verbatim}
+MANIFEST = json.loads(Path("data/manifest.json").read_text(encoding="utf-8"))
+t0 = MANIFEST["module1"]["t0"]
+t1 = MANIFEST["module1"]["t1"]
+anchor = Path(MANIFEST["module1"]["anchor_file"])
+bench = Path(MANIFEST["module3"]["benchmark_file"])
+\end{verbatim}
+
+Do not write \texttt{2015} or \texttt{2025} as literals in student tasks
+unless you are illustrating a historical example.
+
+The numbered steps above are for the \textbf{course team} when a
+new vintage is issued. They are not student tasks.
+
+\section{Course Files versus Group-Collected Files}
+
+Students work with two layers of data.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.28\textwidth}p{0.32\textwidth}X@{}}
+\toprule
+Layer & Who writes the files & How notebooks find them \\
+\midrule
+Course-issued
+(anchor, companion,
+benchmark, scenarios) &
+The course team. &
+Read paths and years from
+\texttt{data/manifest.json}.
+Do not edit that file. \\[0.8em]
+Group-collected
+(extra VGR, SCB, or
+other public extracts
+for approved KPIs) &
+The group. &
+Save a CSV under
+\texttt{data/group\_sources/}
+and load it with an explicit
+path in the notebook.
+Record it in the group's
+source register, not in
+\texttt{manifest.json}. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{What students do with a VGR download}
+
+Yes: they format it so it can join the five-municipality table.
+No: they do not wire it through \texttt{manifest.json}.
+
+\begin{enumerate}
+    \item Keep the original download (for example a PDF table or
+    Excel export) outside the issued folders, or in
+    \texttt{data/group\_sources/raw/}.
+    \item Do not overwrite the downloaded file. In the notebook,
+    standardize keys and rename columns to the field names below
+    (\texttt{Municipality\_Code}, \texttt{Year}, \ldots).
+    \item Save one analysis-ready CSV per source, for example
+    \texttt{data/group\_sources/travel\_times.csv}.
+    \item Add one row to the group's source register
+    (\texttt{data/group\_sources/Source\_Register.csv}):
+    file path, observation unit, keys, coverage, units,
+    missing-value markers.
+    \item Join with the same Module~2 rules:
+    \texttt{how}, \texttt{validate}, \texttt{indicator}.
+    Keep all five municipalities. A missing match is a coverage
+    gap, not a zero.
+\end{enumerate}
+
+A CSV is enough. Students are not asked to write JSON.
+A broken comma in \texttt{manifest.json} would stop the whole
+class pipeline; a broken group CSV affects only that group
+and is visible in the source register.
+
+If a group cannot produce a comparable extract for all five
+municipalities, the indicator stays Unresolved or Unknown.
+That is an acceptable Module~1--2 outcome.
+
+There is no advanced, source-specific support for group
+downloads. The course team does not know in advance which
+table a group will find. Formatting, name-to-code mapping,
+and the join are the group's work, using the issued companions
+as the method example.
+
+\begin{databox}{Do not put group files here}
+\texttt{data/00\_decision\_model\_zero/} through
+\texttt{data/04\_module4/} and \texttt{data/manifest.json}
+are course-issued. Replacing them mixes vintages and breaks
+the live challenge.
+\end{databox}
+
+\begin{databox}{Current vintage}
+\textbf{Vintage:} 2026.1\\
+\textbf{Released:} with this vintage (not a timetable date)\\
+\textbf{Anchor reference years:} $t_0 = 2015$, $t_1 = 2025$\\
+\textbf{Geographic coverage:} 52 municipalities present in the SCB
+V\"astra G\"otaland extract (including three Halland-border codes used
+in the source table: 1382 Falkenberg, 1383 Varberg, 1384 Kungsbacka).\\
+\textbf{Predictive component:} not issued as a common file.
+Optional for a group: own model (Module~2 may hold out
+about 20\% of eligible observations) or an external forecast,
+either way justified. Otherwise mark Not assigned.\\
+\textbf{Module 3 common exercise:} synthetic WSM/TOPSIS benchmark,
+issued.\\
+\textbf{Module 4 common exercise:} scenario specification and teaching
+cost ceiling, issued. Not a predictive hold-out.
+\end{databox}
+
+\section{Document Map}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.22\textwidth}p{0.28\textwidth}X@{}}
+\toprule
+Document & Role & Changes when? \\
+\midrule
+\texttt{project\_Introduction.tex} &
+The V{\aa}rdlyftet assignment &
+Only if the decision question changes. \\[0.6em]
+\texttt{module\_design.tex} &
+Module tasks, gateways, methods &
+Only if pedagogy or assessment changes. \\[0.6em]
+\texttt{lectures2026/} &
+Preparation lectures &
+When teaching sequence or examples change. \\[0.6em]
+\texttt{Data\_Stream.tex} (this file)
+& Data contract, dictionaries, vintages &
+When sources, years, or files change. \\[0.6em]
+\texttt{data/manifest.json} &
+Machine-readable switchboard &
+Every data release. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Release 00: Decision Model Zero}
+
+\textbf{Guiding question from the assignment:}
+Which three portfolios would the group prefer to work with, before
+systematic methods are taught?
+
+\subsection*{Files}
+
+\begin{itemize}
+    \item \texttt{data/00\_decision\_model\_zero/VGRBiddingDataset.csv}
+    \item Optional Excel copy:
+    \texttt{data/00\_decision\_model\_zero/VGRBiddingDataset.xlsx}
+\end{itemize}
+
+\subsection*{What students see}
+
+Municipalities appear as coded keys (\texttt{MUN-VGR-101}, \ldots).
+Each row is one municipality inside a five-municipality portfolio
+(\texttt{P1}--\texttt{P7}).
+
+\subsection*{Fields}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.28\textwidth}p{0.18\textwidth}X@{}}
+\toprule
+Field & Type & Meaning \\
+\midrule
+\texttt{Portfolio ID} & code & Group of five coded municipalities. \\
+\texttt{Anonymized Key} & code & Municipality disguise before allocation. \\
+\texttt{VGR Region Context} & text & Instructor-only identity (strip before student release if required). \\
+\texttt{Total Population (2024/2025)} & integer & Snapshot population. \\
+\texttt{Elderly Share \% (65+)} & percent & Broad elderly share, not the Module~1 $80+$ indicator. \\
+\texttt{Operating Clinics} & integer & Approximate incumbent count. \\
+\texttt{Avg Household Income (SEK/mo)} & SEK & Snapshot income. \\
+\texttt{Est. CNI Score} & index & Care Need Index relative to 1.0 national average. \\
+\texttt{Primary Trade-off Tension} & text & Qualitative tension, not a scored KPI. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection*{Release rule}
+
+If identities must remain hidden until after allocation, publish a
+student copy with \texttt{VGR Region Context} removed. Keep the full
+file in the instructor folder.
+
+After allocation, students work with official SCB municipality codes
+from Release 01. Do not treat Decision Model Zero figures as the
+Module~1 calculation source.
+
+\section{Release 01: Module 1 Anchor}
+
+\textbf{Guiding question from the handbook:}
+What should matter in this decision, and can the group calculate a
+common demographic baseline for its five municipalities?
+
+The course team provides one regional working table. All groups use it.
+Each group then selects the five allocated municipality codes.
+
+\subsection*{Files}
+
+\begin{itemize}
+    \item \texttt{data/01\_module1/VGR\_Demographics\_Anchor.csv}
+    \item \texttt{data/01\_module1/SOURCE\_NOTE.md}
+    \item Path and years in \texttt{data/manifest.json} under
+    \texttt{module1}
+\end{itemize}
+
+\subsection*{Grain}
+
+One row = one municipality $\times$ one calendar year.
+
+\subsection*{Required fields}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.28\textwidth}p{0.18\textwidth}X@{}}
+\toprule
+Field & Type & Definition \\
+\midrule
+\texttt{Municipality\_Code} & identifier & Official SCB kommun-kod. Not a measurement. \\
+\texttt{Municipality\_Name} & text & Official name in the extract. \\
+\texttt{Year} & integer & Calendar year of the stock count. \\
+\texttt{Pop\_Total} & count & Total population, all ages. \\
+\texttt{Pop\_0\_17} & count & Ages 0--17. \\
+\texttt{Pop\_18\_64} & count & Ages 18--64. \\
+\texttt{Pop\_65\_79} & count & Ages 65--79. \\
+\texttt{Pop\_80\_Plus} & count & Ages 80 and above, including $100+$. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection*{Provenance (vintage 2026.1)}
+
+\begin{itemize}
+    \item \textbf{Producer:} Statistics Sweden (SCB), table BE0101,
+    population by region, age, sex, and year.
+    \item \textbf{Underlying extract:}
+    \texttt{VGR\_Demographics\_2015\_2025.csv}, itself curated from
+    \texttt{VGR\_Demographics\_Raw.xlsx}.
+    \item \textbf{Construction:} Gender \texttt{totalt} only; age
+    \texttt{TOT} excluded; single-year ages aggregated into the four
+    bands above; county total (\texttt{region\_code = 14}) excluded.
+    \item \textbf{Integrity rule:}
+    $\texttt{Pop\_0\_17}+\texttt{Pop\_18\_64}+\texttt{Pop\_65\_79}+\texttt{Pop\_80\_Plus}=\texttt{Pop\_Total}$.
+\end{itemize}
+
+\subsection*{Prescribed indicators (formulas stay in the handbook)}
+
+Notebooks must take $t_0$ and $t_1$ from the manifest.
+
+\begin{align*}
+S_{80+,t_{1}}
+&=
+100\,\frac{P_{80+,t_{1}}}{P_{\mathrm{total},t_{1}}},
+\\[0.6em]
+D_{t_{1}}
+&=
+100\,\frac{P_{0\text{--}17,t_{1}}+P_{65\text{--}79,t_{1}}+P_{80+,t_{1}}}{P_{18\text{--}64,t_{1}}},
+\\[0.6em]
+G_{80+}
+&=
+100\,\frac{P_{80+,t_{1}}-P_{80+,t_{0}}}{P_{80+,t_{0}}}.
+\end{align*}
+
+Do not compute mean or median age from these four bands.
+
+\subsection*{Structural checks the notebook must run}
+
+\begin{enumerate}
+    \item All five allocated municipality codes are present.
+    \item Each municipality has one row for $t_0$ and one row for $t_1$.
+    \item \texttt{Municipality\_Code} and \texttt{Year} jointly identify
+    rows uniquely.
+    \item Required population fields are numeric, non-negative, and not
+    missing.
+    \item The four age-group counts sum to \texttt{Pop\_Total}.
+\end{enumerate}
+
+If a check fails, students inspect extraction or selection. They must
+not drop a municipality, replace missing values with zero, or edit the
+source file.
+
+\subsection*{Refreshing Module 1}
+
+When SCB publishes a later year, rebuild
+\texttt{VGR\_Demographics\_Anchor.csv}, move $t_1$ forward in the
+manifest, and keep $t_0$ either fixed (ten-year window) or shifted
+(rolling window). Record the choice in the source note.
+
+\section{Release 02: Module 2 Companion Streams}
+
+\textbf{Guiding question from the handbook:}
+Can the group combine the sources needed to compare its five
+municipalities without losing alternatives, inventing values, or
+silently changing indicator meaning?
+
+Module 2 consumes:
+\begin{itemize}
+    \item the frozen Module~1 anchor for the five allocated
+    municipalities (Release 01);
+    \item the common companion files in this release;
+    \item any additional verified sources from the group's approved
+    KPI-to-data table.
+\end{itemize}
+
+Complete the common companion exercise first. Then apply the same
+checks to portfolio sources. There is no fixed dataset count.
+
+\subsection*{Files}
+
+\begin{itemize}
+    \item \texttt{data/02\_module2/VGR\_Companion\_Annual.csv}
+    \item \texttt{data/02\_module2/VGR\_Companion\_StaticLookup.csv}
+    \item \texttt{data/02\_module2/VGR\_Masked\_TreatmentExercise.csv}
+    \item \texttt{data/02\_module2/SOURCE\_NOTE.md}
+    \item Paths and status in \texttt{data/manifest.json} under
+    \texttt{module2}
+\end{itemize}
+
+\subsection*{Predictive component (vintage 2026.1)}
+
+Not issued as a common file. Prediction is optional for a group:
+build a model (Module~2 may hold out about 20\% of eligible
+observations) or join a published forecast, and justify either.
+Do not split the five-municipality decision table as an MCDA
+training/test set. Do not split the ten-row Module~1 prototype
+to create a hold-out file. If the group does not take it up,
+mark \texttt{Not assigned}.
+
+\subsection*{A. Annual companion}
+
+\textbf{Grain:} one row = one municipality in year $t_1$
+(the year is stored in the file and must match
+\texttt{module1.t1} in the manifest).
+
+\textbf{Join:} \texttt{Municipality\_Code} (and \texttt{Year}, after
+confirming both tables use the same $t_1$). Expected relationship
+to the $t_1$ demographic extract: one-to-one.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.30\textwidth}p{0.16\textwidth}X@{}}
+\toprule
+Field & Type & Definition \\
+\midrule
+\texttt{Municipality\_Code} & identifier & Official SCB kommun-kod. \\
+\texttt{Municipality\_Name} & text & Display label only. \\
+\texttt{Year} & integer & Calendar year of the observation ($t_1$). \\
+\texttt{Operating\_Clinics} & count & Course-constructed incumbent
+count. Not a live VGR clinic register. \\
+\texttt{Clinics\_per\_10k} & rate &
+$10000 \times \texttt{Operating\_Clinics} / \texttt{Pop\_Total}$
+at $t_1$. Verify; do not treat as an independent measurement. \\
+\texttt{Avg\_Travel\_Time\_min} & minutes & Curated accessibility
+estimate. Documented missing marker: \texttt{..}. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Documented travel-time gaps in vintage 2026.1:
+\texttt{1444} Gr\"astorp, \texttt{1446} Karlsborg, \texttt{1447}
+Gullsp\aa ng, \texttt{1465} Svenljunga.
+
+\subsection*{B. Static municipality lookup}
+
+\textbf{Grain:} one row = one municipality. There is \textbf{no}
+\texttt{Year} field.
+
+\textbf{Join:} \texttt{Municipality\_Code} only. After the annual
+table has been reduced to one row per municipality, the expected
+relationship is one-to-one. If annual history is joined before
+filtering to $t_1$, the relationship is many-to-one.
+
+Do not invent a year column on this file. If a static value is reused
+at $t_1$, label the reference period and the assumption.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.30\textwidth}p{0.16\textwidth}X@{}}
+\toprule
+Field & Type & Definition \\
+\midrule
+\texttt{Municipality\_Code} & identifier & Official SCB kommun-kod. \\
+\texttt{Municipality\_Name} & text & Display label only. \\
+\texttt{Care\_Need\_Index} & index & Course-constructed CNI relative
+to 1.0. Teaching values aligned with Decision Model Zero where
+identities match; otherwise 1.0. \\
+\texttt{Est\_Premises\_Cost\_kSEK} & kSEK & Course-constructed
+premises-cost teaching estimate. Documented missing marker:
+\texttt{..} (vintage 2026.1: \texttt{1438} Dals-Ed). \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection*{C. Masked treatment exercise}
+
+\textbf{Grain:} one synthetic record. These rows are \textbf{not}
+municipalities and must not enter the decision table.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.28\textwidth}p{0.18\textwidth}X@{}}
+\toprule
+Field & Type & Definition \\
+\midrule
+\texttt{Record\_ID} & identifier & Teaching record label. \\
+\texttt{Synthetic\_Value} & numeric or \texttt{..} & Observed values
+10, 12, 14, 64 and one documented missing marker. \\
+\texttt{Note} & text & \texttt{observed}, \texttt{observed outlier},
+or \texttt{documented missing}. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Use this file for the required two-treatment comparison when the
+portfolio has no suitable missingness issue, or as the common
+mean-versus-median rehearsal. Keep results separate from factual
+establishment evidence.
+
+\subsection*{Missing-value rule}
+
+The documented marker in this release is \texttt{..}.
+Parse it as missing. It is not zero, not ``no clinics'', and not
+``zero minutes''.
+
+Do not treat every blank, dash, or unmatched join as the same event:
+\begin{itemize}
+    \item missing in the source;
+    \item unmatched after a join;
+    \item not applicable or suppressed, where documented;
+    \item unavailable because coverage differs.
+\end{itemize}
+
+\subsection*{Required pipeline checks}
+
+\begin{enumerate}
+    \item Every input has an observation unit, key fields, coverage,
+    units, and missing-value markers in the source register.
+    \item Keys are standardized in code. Source files remain unmodified.
+    \item Key uniqueness is checked before each join.
+    \item Joins declare \texttt{how}, \texttt{validate}, and
+    \texttt{indicator}.
+    \item The audit records input counts, output count, unmatched keys,
+    and the join relationship.
+    \item All five allocated codes remain in the decision table.
+    \item A missing match is reported, not filled with zero and not
+    used as a reason to drop a municipality.
+    \item Predictive partitions are omitted unless the group took
+    up a model in Module~2 (then hold out about 20\% of eligible
+    observations). An external forecast is joined like any other
+    group source. Do not split the five municipalities.
+\end{enumerate}
+
+\subsection*{What these files are not}
+
+They are not a live clinic register, a cadastral premises-cost extract,
+or an official Care Need Index publication. Labelled teaching fields
+must not be presented as independently verified establishment facts.
+Group-collected external sources remain the group's responsibility
+and must pass the same checks.
+
+\subsection*{Refreshing Module 2}
+
+Replace files only inside \texttt{data/02\_module2/}. Update
+\texttt{manifest.json} paths, the predictive-component flag, and this
+section. Re-execute the instructor solution notebook. If a later
+vintage assigns prediction, publish the modelling specification
+before requiring a split.
+
+\section{Release 03: Module 3 Benchmark}
+
+\textbf{Guiding question from the handbook:}
+Under explicit preferences, which alternative performs best in a
+checked comparison, and what would change that conclusion?
+
+Module 3 consumes:
+\begin{itemize}
+    \item the group's approved five-municipality decision table
+    (produced in Module~2 from Releases 01 and 02);
+    \item the common synthetic benchmark in this release;
+    \item the group's recorded indicator directions and baseline
+    weights.
+\end{itemize}
+
+The course team does \textbf{not} issue a new municipal extract for
+Module~3. The benchmark is a calculation exercise. Portfolio scores
+are computed from the Module~2 table.
+
+Complete and check the benchmark in \texttt{starter\_m3.ipynb} before
+applying the same functions to the portfolio.
+
+\subsection*{Files}
+
+\begin{itemize}
+    \item \texttt{data/03\_module3/MCDA\_Benchmark.csv}
+    \item \texttt{data/03\_module3/MCDA\_Benchmark\_Meta.csv}
+    \item \texttt{data/03\_module3/SOURCE\_NOTE.md}
+    \item Paths and status in \texttt{data/manifest.json} under
+    \texttt{module3}
+\end{itemize}
+
+\subsection*{Predictive component (vintage 2026.1)}
+
+Not issued as a common file. Insert a predicted column only if
+the group justified it in Module~2 and the value is finite for
+all five municipalities. Label it as a prediction. Otherwise mark
+\texttt{Not assigned}. Do not invent a regression target merely
+to fill the matrix.
+
+\subsection*{A. Benchmark matrix}
+
+\textbf{Grain:} one row = one synthetic alternative (\texttt{A}--\texttt{E}).
+These labels are not municipalities and must not enter the portfolio
+decision table.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.28\textwidth}p{0.16\textwidth}X@{}}
+\toprule
+Field & Type & Definition \\
+\midrule
+\texttt{Alternative} & identifier & Teaching label A--E. \\
+\texttt{opportunity} & index & Benefit criterion; higher preferred. \\
+\texttt{annual\_cost} & SEK million & Cost criterion; lower preferred. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Values (vintage 2026.1):
+
+\begin{center}
+\small
+\begin{tabular}{lrr}
+\toprule
+Alternative & opportunity & annual\_cost \\
+\midrule
+A & 10 & 10 \\
+B & 8 & 6 \\
+C & 6 & 4 \\
+D & 4 & 3 \\
+E & 2 & 2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{B. Benchmark metadata}
+
+\textbf{Grain:} one row = one scored indicator.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.22\textwidth}p{0.16\textwidth}X@{}}
+\toprule
+Field & Type & Definition \\
+\midrule
+\texttt{indicator} & name & Must match a column in the benchmark
+matrix. Align weights and directions by this name, not by column
+order. \\
+\texttt{direction} & \texttt{Benefit} or \texttt{Cost} &
+Benefit: higher preferred. Cost: lower preferred. \\
+\texttt{weight} & $[0,1]$ & Non-negative. The issued baseline sums
+to 1: opportunity $0.60$, annual cost $0.40$. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection*{Method conventions (lecture, notebook, and this contract)}
+
+\begin{itemize}
+    \item WSM uses direction-aware min--max normalization. A constant
+    column is scored 0 for every alternative; retain its weight.
+    \item TOPSIS vector-normalizes the \textbf{raw} matrix, then applies
+    weights. Do not feed the WSM $Z$ matrix into TOPSIS.
+    \item Cost criteria keep non-negative weights. Direction is handled
+    in normalization, not by a negative $w$.
+    \item Rank higher scores first. Exact ties use average rank.
+    \item Spearman $\rho$ is descriptive. It is undefined if a ranking
+    is constant. No significance test is required for five alternatives.
+\end{itemize}
+
+\subsection*{Reference checks (vintage 2026.1)}
+
+WSM scores: A $0.60$, B $0.65$, C $0.60$, D $0.50$, E $0.40$.
+
+TOPSIS closeness (three decimal places): A $0.565$, B $0.648$,
+C $0.588$, D $0.487$, E $0.435$.
+
+Live-challenge rehearsal on this same file: set annual-cost weight
+to $0.70$ and redistribute. WSM then ranks E first with score $0.70$.
+The in-class instruction may use a different $\alpha$; it still uses
+this benchmark, not an unavailable portfolio indicator.
+
+\subsection*{Portfolio scoring}
+
+A Module~2 column may enter the scoring matrix only if:
+\begin{itemize}
+    \item it is an approved scored indicator;
+    \item every one of the five municipalities has a finite value;
+    \item Benefit/Cost direction is recorded;
+    \item it is not an identifier, year, or status flag.
+\end{itemize}
+
+Exclude a source-missing field (vintage 2026.1 example: travel time
+for \texttt{1465} Svenljunga) unless an instructor-approved treatment
+exists. Do not fill with zero to force a rank. Do not drop a
+municipality to make a method run.
+
+Clinic counts, CNI, and premises costs remain labelled teaching
+values. They may be scored only if they were approved in Module~1,
+and the label stays in the metadata.
+
+\subsection*{What these files are not}
+
+They are not V\"astra G\"otaland municipalities, not a live cost
+extract, and not establishment evidence. Benchmark leaders are
+teaching results.
+
+\subsection*{Refreshing Module 3}
+
+Replace files only inside \texttt{data/03\_module3/}. Update
+\texttt{manifest.json} paths and the predictive-component flag.
+Re-execute \texttt{solution\_m3.ipynb} and replace the reference
+scores in this section and in the source note if the benchmark
+values change.
+
+\section{Release 04}
+
+\texttt{data/04\_module4/} issues the Module~4 scenario contract.
+It is not a predictive hold-out.
+
+\subsection{Files}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.34\textwidth}X@{}}
+\toprule
+File & Role \\
+\midrule
+\texttt{Scenario\_Spec.csv} &
+Named changes for baseline, operating, and combined scenarios
+on the synthetic benchmark and the portfolio cost field. \\[0.4em]
+\texttt{Constraint\_Spec.csv} &
+Teaching ceilings. The benchmark ceiling is compulsory for the
+common rehearsal. The portfolio ceiling is an illustrative
+demonstration assumption. \\[0.4em]
+\texttt{SOURCE\_NOTE.md} &
+Source note and live-challenge boundary. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Issued parameters}
+
+\begin{itemize}
+    \item Operating scenario: multiply the named cost field by $1.20$.
+    Keep other indicators and baseline weights unchanged.
+    \item Combined scenario (benchmark): the same cost scaling and
+    cost weight $0.70$ (opportunity $0.30$).
+    \item Combined scenario (portfolio): the same cost scaling and
+    the Module~3 premises-cost priority weight $0.40$.
+    \item Benchmark ceiling: \texttt{annual\_cost} $\le 6.5$ cost units.
+    Synthetic teaching assumption. Alternative B ($6.0$) meets it at
+    baseline and exceeds it after the 20\% increase ($7.2$).
+    Alternative A ($10$) already exceeds it at baseline.
+    \item Demonstration portfolio ceiling:
+    \texttt{Est\_Premises\_Cost\_kSEK} $\le 650$.
+    Illustrative teaching assumption for instructor notebooks.
+    Groups must label any portfolio ceiling as a group assumption
+    unless a case requirement is issued.
+\end{itemize}
+
+\subsection{What this release is not}
+
+Do not split the five-municipality table.
+Do not treat these files as reserved outcomes.
+Prediction remains \textbf{Not assigned} in vintage 2026.1.
+
+Uniform positive scaling of one criterion leaves prescribed
+normalized values unchanged when normalization is recomputed.
+Absolute costs still rise. Recheck the ceiling.
+
+To refresh this release, replace files only inside
+\texttt{data/04\_module4/}, update \texttt{manifest.json},
+re-execute \texttt{solution\_m4.ipynb}, and revise the reference
+notes in this section if the issued multiplier or ceiling changes.
+
+\section{Field Naming Convention}
+
+Use the following names in every new extract so notebooks remain
+stable:
+\begin{itemize}
+    \item \texttt{Municipality\_Code} --- SCB kommun-kod, stored as text
+    or integer identifier, never used as a numeric feature.
+    \item \texttt{Municipality\_Name} --- display label only.
+    \item \texttt{Year} --- calendar year of the observation.
+    \item \texttt{Alternative} --- synthetic benchmark row label in
+    Module~3 only.
+    \item \texttt{direction} --- \texttt{Benefit} or \texttt{Cost}.
+    \item \texttt{weight} --- non-negative preference weight.
+    \item Indicator-specific fields documented in the module source
+    note, not invented ad hoc in notebooks.
+\end{itemize}
+
+If an upstream table uses Swedish headers, map them in the source note.
+Do not require students to guess column names from a live website.
+
+\section{Instructor Checklist for a Data Refresh}
+
+\begin{enumerate}
+    \item Confirm the assignment question in \texttt{project\_Introduction.tex}
+    is unchanged. If the decision changed, that is a course change, not
+    a data change.
+    \item Replace files only inside \texttt{data/<module>/}.
+    \item Update \texttt{manifest.json} vintage, dates, paths, and
+    $t_0$/$t_1$.
+    \item Update this document's vintage box and the relevant source
+    note.
+    \item Execute the instructor solution notebook
+    (\texttt{solution\_m1.ipynb}, \texttt{solution\_m2.ipynb},
+    \texttt{solution\_m3.ipynb}, or \texttt{solution\_m4.ipynb})
+    and archive reference outputs.
+    \item Tell students which vintage they must download. Mixed vintages
+    in one group are not permitted.
+\end{enumerate}
+
+\begin{casebox}{The data stream in one sentence}
+Keep the V{\aa}rdlyftet decision fixed, keep the methods in the handbook
+fixed, and let \texttt{data/} plus this document absorb every change in
+years, tables, and extracts.
+\end{casebox}
+
+\end{document}

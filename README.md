@@ -1,119 +1,160 @@
-# C1DB1B (2026) – Data Management for Decision-Making
+# C1DB1B – Data Management for Decision-Making
 *Datahantering för beslutsfattande (7,5 högskolepoäng / 7.5 ECTS credits)*  
 *Program*: Systemvetarutbildningen, Högskolan i Borås  
-*Term*: Spring 2026  
+*Offering*: current Canvas instance (rooms and clock times live there)
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MwiseG/C1DB1B2026/main?labpath=starter_m1.ipynb)
 
 ---
 
-## 🚀 Quick Start: Run in Your Browser with Binder
+## How you will work
 
-This repository is configured for **MyBinder.org**, allowing students and instructors to run all interactive Jupyter notebooks immediately in the cloud—**zero local installation, Python setup, or environment configuration required**.
+**Bring a laptop** to every workshop. Run the notebooks **locally**. Binder is a backup only.
 
-1. Click the **[Launch Binder](https://mybinder.org/v2/gh/MwiseG/C1DB1B2026/main?labpath=starter_m1.ipynb)** badge above.
-2. Wait 1–2 minutes for the cloud Jupyter environment to build and launch.
-3. Open `starter_m1.ipynb` in the file browser.
-4. Follow the step-by-step instructions, complete the `# TODO:` coding tasks for your assigned municipality, and answer the Business Decision Questions.
+Hand in your work on **Canvas**. Do not push notebooks, data, or pull requests into this repository. Optional backup on your own GitHub account is fine; it is not the submission.
 
-> ⚠️ **Important Submission Notice for Binder Users**:  
-> Binder sessions are temporary and reset when idle. **Always download your completed notebook** to your local computer before closing your browser:  
-> **File $\rightarrow$ Download** (as `.ipynb`)  
-> Submit your completed file to Canvas / course LMS as instructed.
+Starter notebooks for Modules 1–4 are in this repository from the start. Complete the matching starter **before** each workshop. Instructor solutions (`solution_m*.ipynb`) are published here only **after** that workshop.
 
 ---
 
-## 📘 Course & Workshop Overview
+## 1. Recommended: Miniconda or Anaconda on your laptop
 
-### Workshop 1: Demographic Data Curation, Descriptive Statistics & Strategic Healthcare Decision Support
+Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/download) before Workshop 1.
 
-In this workshop, students take on the executive role of a **Healthcare Data Analyst & Decision Support Specialist** advising the leadership of **Västra Götalandsregionen (VGR)**. VGR oversees healthcare delivery across 49+ municipalities and faces urgent capital expenditure decisions regarding where to allocate eldercare and geriatric care facilities from a **500 million SEK investment pool**.
-
-#### Core Learning Objectives:
-- **Data Engineering & Curation**:
-  - Ingest raw administrative multi-header spreadsheets (`VGR_Demographics_Raw.xlsx`).
-  - Forward-fill merged hierarchical headers (regions, single-year age cohorts).
-  - Handle missing and corrupted data markers (`..`, whitespace) and export an audit-ready dataset (`VGR_Demographics_2015_2025.csv`).
-- **Descriptive Statistics for Decision Support**:
-  - Compute weighted central tendency: **Mean Age ($\bar{x}$)** vs. **Median Age**.
-  - Quantify dispersion: **Standard Deviation ($\sigma$)**.
-  - Measure relative volatility: **Coefficient of Variation ($CV = (\sigma / \bar{x}) \times 100$)**.
-  - Track 10-year demographic momentum and volatility for the vulnerable **80+ cohort (2015–2025)**.
-- **Statistical Interpretation & Skewness**:
-  - Diagnose distribution asymmetry ($\bar{x} > \text{Median}$ vs. $\text{Median} > \bar{x}$).
-  - Understand why relying purely on arithmetic means distorts healthcare capital allocation.
-- **Strategic KPI Formulation**:
-  - Formulate quantitative Key Performance Indicators (*Aging Intensity Ratio*, *Elderly Growth Velocity*) to justify capital budget allocations.
-
----
-
-### Workshop 2: Data Preparation, Hygiene & Pipeline Amalgamation (The "4+1" Merge)
-
-In Workshop 2, analysts assemble the central municipal decision-support database by amalgamating curated demographics with external health and socioeconomic indicators across all 52 VGR municipalities.
-
-#### Core Learning Objectives:
-- **Relational Pipeline Amalgamation ("4+1" Join)**:
-  - Formulate primary and foreign key constraints on `municipality_code`.
-  - Execute inner vs. outer audit checks (`pd.merge`) ensuring zero municipality attrition (52/52 maintained).
-- **Data Hygiene & Imputation Sensitivity**:
-  - Unmask administrative missing value tokens (`..`, ` `, `-`) and convert to `np.nan`.
-  - Conduct an **Imputation Sensitivity Audit**: measure variance collapse ($\sigma_{\text{mean}} < \sigma_{\text{median}}$) and evaluate rural equity distortions under mean vs. median imputation.
-- **Preprocessing Choice Menu (Group Portfolio Strategy)**:
-  - Diagnose non-commensurate feature scales and distributional anomalies.
-  - Implement and evaluate data transformations:
-    - **Option A (Log Transform)**: Compressing long right tails in municipal income distributions (`np.log1p`).
-    - **Option B (Robust Capping / Winsorization)**: Mitigating island and mountain transit outliers (95th percentile clipping).
-    - **Option C (Standard Z-Score)**: Centering symmetric clinical indices ($\mu = 0, \sigma = 1$).
-    - **Option D (Min-Max Scaling)**: Compressing utilization rates to bounded $[0, 1]$ intervals.
-- **Validation Governance (The 20% Hold-Out Lock)**:
-  - Enforce the foundational firewall against data leakage and model optimism.
-  - Partition the amalgamated registry into an 80% training set (41 municipalities) and 20% hold-out test set (11 municipalities), cryptographically sequestering test data prior to Module 3 predictive modeling.
-
----
-
-## 🔧 Repository Contents & Release Schedule
-
-> 💡 **Pedagogical Workflow**:  
-> In accordance with course design, **starter notebooks** (`starter_m*.ipynb`) and datasets are published prior to each workshop so students can prepare and follow along in real time. **Benchmark solution notebooks** (`solution_m*.ipynb`) are released to this repository following the completion of each module workshop.
-
-| File | Release Status | Description |
-| :--- | :--- | :--- |
-| **`starter_m1.ipynb`** | 🟢 **Available Now** | Scaffolded student workshop notebook for Module 1 (Demographics & Descriptive Stats). |
-| **`solution_m1.ipynb`** | 🔒 *Released After Workshop* | Complete benchmark reference solution for Module 1 with county rankings and visual distribution audits. |
-| **`starter_m2.ipynb`** | 🟢 **Available Now** | Scaffolded student workshop notebook for Module 2 (Data Preparation, Hygiene & Preprocessing). |
-| **`solution_m2.ipynb`** | 🔒 *Released After Workshop* | Complete benchmark reference solution for Module 2 with executed diagnostic subplots and sensitivity audits. |
-| **`VGR_Demographics_Raw.xlsx`** | 🟢 **Available Now** | Raw Statistics Sweden (SCB) administrative table containing VGR demographic counts (2015–2025). |
-| **`VGR_Demographics_2015_2025.csv`** | 🟢 **Available Now** | Curated, audit-ready demographic CSV produced during Module 1 (16,218 rows $\times$ 28 columns). |
-| **`VGR_External_Health_Socioeconomic.csv`** | 🟢 **Available Now** | Multi-source external indicators table (52 municipalities) containing socioeconomic, transit, risk, and care metrics. |
-| **`VGR_Training_Model_Set.csv`** | 🟢 **Available Now** | 80% training partition (41 municipalities) for predictive modeling in Module 3. |
-| **`VGR_Holdout_Test_Set.csv`** | 🔒 **Locked & Sequestered** | 20% hold-out test partition (11 municipalities) reserved for final blind model evaluation. |
-| **`requirements.txt`** | 🟢 **Available Now** | Package dependencies for Binder (Pandas, NumPy, SciPy, Scikit-learn, Matplotlib, Seaborn, OpenPyXL). |
-
----
-
-## 💻 Local Setup (Alternative to Binder)
-
-If you prefer to run the workshop locally on your own machine:
+Then, in **Anaconda Prompt** (Windows) or a terminal (macOS/Linux):
 
 ```bash
-# 1. Clone this repository
 git clone https://github.com/MwiseG/C1DB1B2026.git
 cd C1DB1B2026
+```
 
-# 2. (Optional) Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+If you do not use git, download the repository ZIP from GitHub (Code → Download ZIP) and unzip it.
 
-# 3. Install required dependencies
+Create an environment and install the packages:
+
+```bash
+conda create -n c1db1b python=3.11 -y
+conda activate c1db1b
 pip install -r requirements.txt
-
-# 4. Launch JupyterLab
 jupyter lab
 ```
 
+Open `starter_m1.ipynb` and confirm that it runs. The notebook must be able to see the `data/` folder next to it.
+
+Before each later workshop, open the matching starter (`starter_m2.ipynb`, `starter_m3.ipynb`, `starter_m4.ipynb`) the same way.
+
 ---
 
-## 📚 Required Literature & References
+## 2. Binder (backup only)
+
+Use Binder if local installation fails. Click the badge above, wait for the session to start, and open the starter you need.
+
+Treat Binder with caution:
+
+- The session is temporary. Closing the tab, losing wifi, or leaving it idle **deletes your work**.
+- After every substantial change: **File → Download** as `.ipynb`.
+- Download again before you close the window.
+- Submit that downloaded file on Canvas. Binder is not a store.
+
+Do not rely on Binder as the main runtime in the three-hour workshop. The freeze, live injection, and upload all need a file that stays on your laptop.
+
+---
+
+## Course and workshop overview
+
+Recorded lectures Fö A1–A4 precede Workshops 1–4. Each workshop executes the matching module. Rooms and clock times live on Canvas, not in this file.
+
+Group-collected files are formatted and joined by the group; there is no source-specific support. Prediction is optional (own model with a Module 2 hold-out of about 20% of eligible observations, or an external forecast); either way, justify it.
+
+### Workshop 1: Decision Framing, KPI-to-Data Mapping & Baseline Demonstration
+
+Students advise **Vårdlyftet** on where (if anywhere) to establish its next primary care centre, using an allocated portfolio of **five municipalities**. Module 1 does not require a winning municipality. It requires a decision statement, a KPI-to-data map, three prescribed demographic indicators, initial weights, and a live sensitivity rehearsal.
+
+Years, file paths, and vintage are read from `data/manifest.json`. See Document B (`Data_Stream.tex`) for how the course team can replace extracts without rewriting notebooks.
+
+#### Core learning objectives
+- Frame the establishment decision (client, alternatives, option not to proceed).
+- Load the Module 1 anchor table and pass structural checks on the five-municipality extract.
+- Calculate $S_{80+}$, the demographic dependency ratio, and $G_{80+}$ using $t_0$ and $t_1$ from the manifest.
+- Map at least six scored indicators to actual fields, including competition/accessibility and financial/operational coverage.
+- Record a provisional weight profile and apply a controlled input change on a copy of the baseline.
+
+---
+
+### Workshop 2: Data Preparation, Hygiene & Pipeline Integration
+
+Module 2 turns the Module 1 decision architecture into a checkable, analysis-ready evidence table. You are still **not** required to pick a winning municipality.
+
+Work in this order:
+
+**Input Contract** → **Integration** → **Diagnosis** → **Treatment** → **Verified Output**
+
+The course team issues a **common companion exercise** under `data/02_module2/`. Apply it to your five allocated municipalities. Then apply the same checks to any additional sources in your approved KPI-to-data table. There is no fixed dataset count and no requirement to use different transformations merely to show variety.
+
+The issued common path does not include a prediction file. Prediction is **optional**: build a model (Module 2 may hold out about 20% of eligible observations) or use a published forecast; justify either. Do not split the five alternatives as an MCDA training/test set. If the group does not take it up, mark **Not assigned**.
+
+---
+
+### Workshop 3: Decision Modelling, MCDA & Sensitivity
+
+Module 3 compares the five municipalities with two checkable methods (WSM and TOPSIS) under explicit weights. You may now form a **provisional** recommendation; it can still be “do not proceed,” and a high rank is not by itself an establishment decision.
+
+Work in this order: check the matrix → review overlap → WSM → TOPSIS from the **raw** values → compare ranks → three weight profiles → recommendation.
+
+Complete the synthetic benchmark in `data/03_module3/` first, then apply the same functions to your portfolio table. Insert a predicted column only if the group justified it in Module 2.
+
+#### Core learning objectives
+- Score only approved numerical columns that are finite for all five alternatives.
+- Treat $|r|>0.8$ as a review flag, not an automatic deletion.
+- Implement direction-aware min–max WSM and vector-normalized TOPSIS with the course edge-case conventions.
+- Compare rankings without treating Spearman $\rho$ as proof of quality.
+- Test baseline, equal, and one priority weight profile on both methods.
+- Explain a conditional recommendation, including method disagreement.
+
+---
+
+### Workshop 4: From Model Results to Defensible Action
+
+Module 4 turns the approved Module 3 package into management advice: **Go**, **Conditional Go**, or **No-Go**. No new scoring method is required.
+
+Work in this order: trace evidence and constraints → one operating-cost scenario → one combined adverse scenario → robustness claim → prediction status → five-sentence recommendation → Decision Model Zero reflection → defense rehearsal.
+
+Complete the common rehearsal in `data/04_module4/` first. Then apply the analogous scenarios to your portfolio table. If the group built a model, evaluate the Module 2 hold-out here. These scenario files are not a hold-out.
+
+#### Core learning objectives
+- Keep ranking, prediction, and feasibility claims distinct.
+- Run specified stress scenarios on copies; do not overwrite the baseline.
+- Recheck absolute cost ceilings when a uniform scaling leaves ranks unchanged.
+- State verifiable conditions, not “proceed if costs seem reasonable.”
+- Return to Decision Model Zero and analyse a recorded episode, not personalities.
+
+---
+
+## Repository contents and release schedule
+
+Starter notebooks for all four modules are available now. Prepare the matching starter before each workshop. **Benchmark solutions** are released to this repository only after that workshop.
+
+| File | Release status | Description |
+| :--- | :--- | :--- |
+| **`starter_m1.ipynb`** | Available now | Module 1: framing, structural checks, three indicators, KPI-to-data table, weights, sensitivity rehearsal. |
+| **`starter_m2.ipynb`** | Available now | Module 2: source register, joins, missingness, treatment comparison, five-row decision table. |
+| **`starter_m3.ipynb`** | Available now | Module 3: benchmark WSM/TOPSIS, portfolio scoring, overlap, weight profiles, provisional recommendation. |
+| **`starter_m4.ipynb`** | Available now | Module 4: evidence/constraints, two stress scenarios, Go / Conditional Go / No-Go, reflection, defense rehearsal. |
+| **`data/`** | Available now | Versioned data stream (`manifest.json`, Decision Model Zero, Module 1–4 files, `group_sources/`). |
+| **`requirements.txt`** | Available now | Package list for local install and Binder. |
+| **`solution_m1.ipynb`** | After Workshop 1 | Instructor benchmark for the demonstration portfolio. |
+| **`solution_m2.ipynb`** | After Workshop 2 | Instructor benchmark for the demonstration portfolio. |
+| **`solution_m3.ipynb`** | After Workshop 3 | Instructor benchmark for the demonstration portfolio. |
+| **`solution_m4.ipynb`** | After Workshop 4 | Instructor benchmark for the demonstration portfolio. |
+| **`VGR_Demographics_Raw.xlsx`** | Available now | Raw Statistics Sweden (SCB) administrative table (2015–2025). |
+| **`VGR_Demographics_2015_2025.csv`** | Available now | Curated demographic extract used to build the Module 1 anchor. |
+| **`VGR_External_Health_Socioeconomic.csv`** | Available now | Source extract behind the Module 2 travel-time field. Use the issued companion files in `data/02_module2/`, not this file as a silent extra join. |
+| **`VGR_Training_Model_Set.csv`** | Not used in 2026.1 Module 2 | Legacy 52-municipality split. Do not treat this as the Module 2 decision table. |
+| **`VGR_Holdout_Test_Set.csv`** | Not used in 2026.1 Module 2 | Legacy hold-out file. Do not treat it as the group's optional 20% test set. |
+
+---
+
+## Required literature and references
 
 1. **Lane, D.** (2022): *Introductory Statistics*. Open Educational Resource.
 2. **Huntsinger, R.**: *Business Analytics: Methods and Cases for Data-Driven Decisions*.
@@ -122,7 +163,7 @@ jupyter lab
 
 ---
 
-## ✉️ Support & Course Contact
+## Support and course contact
 
 Course Instructor: **Gideon Mbiydzenyuy**  
 Email: [gideon.mbiydzenyuy@hb.se](mailto:gideon.mbiydzenyuy@hb.se)  

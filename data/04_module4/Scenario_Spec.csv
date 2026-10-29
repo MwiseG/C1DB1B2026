@@ -1,0 +1,7 @@
+scenario_id,applies_to,description,cost_field,cost_multiplier,weight_change,cost_weight,note
+S1_baseline,benchmark,Preserved Module 3 baseline,annual_cost,1.00,none,,Approved values and weights. Do not overwrite.
+S2_operating,benchmark,Uniform 20 percent cost increase,annual_cost,1.20,none,,Keep opportunity and baseline weights. Recheck the ceiling.
+S3_combined,benchmark,Cost increase and cost-priority weights,annual_cost,1.20,set_cost_weight,0.70,Opportunity weight becomes 0.30.
+S1_baseline,portfolio,Preserved Module 3 baseline,Est_Premises_Cost_kSEK,1.00,none,,Approved values and weights. Do not overwrite.
+S2_operating,portfolio,Uniform 20 percent premises-cost increase,Est_Premises_Cost_kSEK,1.20,none,,Keep other indicators and baseline weights.
+S3_combined,portfolio,Cost increase and Module 3 premises-cost priority,Est_Premises_Cost_kSEK,1.20,set_cost_weight,0.40,Redistribute remaining weight in proportion to the baseline.

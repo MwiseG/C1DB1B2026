@@ -1,0 +1,3 @@
+indicator,direction,weight
+opportunity,Benefit,0.60
+annual_cost,Cost,0.40

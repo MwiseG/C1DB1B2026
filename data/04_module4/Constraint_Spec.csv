@@ -1,0 +1,3 @@
+constraint_id,applies_to,field,operator,threshold,status_if_missing,source,note
+C1_cost_ceiling,benchmark,annual_cost,<=,6.5,Unknown,Synthetic teaching assumption,Compulsory for the common rehearsal. Alternative B crosses 6.5 after a 20 percent increase.
+C1_cost_ceiling,portfolio,Est_Premises_Cost_kSEK,<=,650,Unknown,Illustrative teaching assumption,Used in the instructor demonstration notebooks. Groups must label their own ceiling as a group assumption unless a case requirement is issued.
